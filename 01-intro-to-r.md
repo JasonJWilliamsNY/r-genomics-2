@@ -1,7 +1,7 @@
 ---
 layout: lesson
 root: .
-title: intro to R
+title: Intro to R
 author: Data Carpentry contributors
 minutes: 45
 ---
