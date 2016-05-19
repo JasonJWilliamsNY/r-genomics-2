@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+      <title>Data Visualization</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link href="/css/bootstrap/bootstrap.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="/css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="/css/swc.css" />
+<link rel="stylesheet" type="text/css" href="/css/swc-bootstrap.css" />
+<meta charset="UTF-8" />
+<meta http-equiv="last-modified" content="" />
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/css/lesson.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="banner">
+  <a href="http://datacarpentry.org" title="Data Carpentry">
+    <img alt="Data Carpentry banner" src="/img/DC1_logo_small.png" height="50px" />
+  </a>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span10 offset1">
+	  <!-- start content -->
+          
+          <h1>Data Visualization</h1>
+          
+          <h2>Learning Objectives</h2>
+
+<ul>
+<li>Basic plots </li>
+<li>Advanced plots (introducing <code>ggplot</code>)</li>
+<li>Writing images (and other things) to file</li>
+</ul>
+
+<h2>Lesson</h2>
+
+<h3>Basic plots in R</h3>
+
+<p>The mathematician Richard Hamming once said, &quot;The purpose of computing is insight, not numbers&quot;, and the best way to develop insight is often to visualize data. Visualization deserves an entire lecture (or course) of its own, but we can explore a few features of R&#39;s plotting packages.</p>
+
+<p>When we are working with large sets of numbers it can be useful to display that information graphically. R has a number of built-in tools for basic graph types such as histograms, scatter plots, bar charts, box plots and much <a href="http://www.statmethods.net/graphs/">more</a>. We&#39;ll test a few of these out here on the <code>genome_size</code> vector from our metadata.</p>
+<div class="highlight"><pre><code class="language-r simplestats" data-lang="r simplestats">genome_size &lt;- metadata$genome_size
+</code></pre></div>
+<h3>Scatterplot</h3>
+
+<p>Let&#39;s start with a <strong>scatterplot</strong>. A scatter plot provides a graphical view of the relationship between two sets of numbers. We don&#39;t have a variable in our metadata that is a continuous variable, so there is nothing to plot it against but we can plot the values against their index values just to demonstrate the function.</p>
+<div class="highlight"><pre><code class="language-r scatter-plot1, fig.align='center'" data-lang="r scatter-plot1, fig.align='center'">plot(genome_size)
+</code></pre></div>
+<p>Each point represents a clone and the value on the x-axis is the clone index in the file, where the values on the y-axis correspond to the genome size for the clone. For any plot you can customize many features of your graphs (fonts, colors, axes, titles) through <a href="http://www.statmethods.net/advgraphs/parameters.html">graphic options</a> For example, we can change the shape of the data point using <code>pch</code>.</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">plot(genome_size, pch=8)
+</code></pre></div>
+<p>We can add a title to the plot by assigning a string to <code>main</code>:</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">plot(genome_size, pch=8, main="Scatter plot of genome sizes")
+</code></pre></div>
+<h3>Histogram</h3>
+
+<p>Another way to visualize the distribution of genome sizes is to use a histogram, we can do this buy using the <code>hist</code> function:</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">hist(genome_size)
+</code></pre></div>
+<h3>Boxplot</h3>
+
+<p>Using additional information from our metadata, we can use plots to compare values between the different citrate mutant status using a <strong>boxplot</strong>. A boxplot provides a graphical view of the median, quartiles, maximum, and minimum of a data set. </p>
+<div class="highlight"><pre><code class="language-r boxplot, fig.align='center'" data-lang="r boxplot, fig.align='center'"># Boxplot
+boxplot(genome_size ~ cit, metadata)
+</code></pre></div>
+<p>Similar to the scatterplots above, we can pass in arguments to add in extras like plot title, axis labels and colors.</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">boxplot(genome_size ~ cit, metadata,  col=c("pink","purple", "darkgrey"),
+        main="Average expression differences between celltypes", ylab="Expression")
+</code></pre></div>
+<h2>Advanced figures (<code>ggplot2</code>)</h2>
+
+<p>More recently, R users have moved away from base graphic options and towards a plotting package called <a href="http://docs.ggplot2.org/"><code>ggplot2</code></a> that adds a lot of functionality to the basic plots seen above. The syntax takes some getting used to but it&#39;s extremely powerful and flexible. We can start by re-creating some of the above plots but using ggplot functions to get a feel for the syntax.</p>
+
+<p><code>ggplot</code> is best used on data in the <code>data.frame</code> form, so we will will work with <code>metadata</code> for the following figures. Let&#39;s start by loading the <code>ggplot2</code> library.</p>
+<div class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+</code></pre></div>
+<p>The <code>ggplot()</code> function is used to initialize the basic graph structure, then we add to it. The basic idea is that you specify different parts of the plot, and add them together using the <code>+</code> operator.</p>
+
+<p>We will start with a blank plot and will find that you will get an error, because you need to add layers.</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">ggplot(metadata) # note the error 
+</code></pre></div>
+<p>Geometric objects are the actual marks we put on a plot. Examples include:</p>
+
+<ul>
+<li>points (<code>geom_point</code>, for scatter plots, dot plots, etc)</li>
+<li>lines (<code>geom_line</code>, for time series, trend lines, etc)</li>
+<li>boxplot (<code>geom_boxplot</code>, for, well, boxplots!)</li>
+</ul>
+
+<p>A plot <strong>must have at least one geom</strong>; there is no upper limit. You can add a geom to a plot using the + operator</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">ggplot(metadata) +
+  geom_point() # note what happens here
+</code></pre></div>
+<p>Each type of geom usually has a <strong>required set of aesthetics</strong> to be set, and usually accepts only a subset of all aesthetics --refer to the geom help pages to see what mappings each geom accepts. Aesthetic mappings are set with the aes() function. Examples include:</p>
+
+<ul>
+<li>position (i.e., on the x and y axes)</li>
+<li>color (&quot;outside&quot; color)</li>
+<li>fill (&quot;inside&quot; color) shape (of points)</li>
+<li>linetype</li>
+<li>size</li>
+</ul>
+
+<p>To start, we will add position for the x- and y-axis since <code>geom_point</code> requires mappings for x and y, all others are optional.</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">ggplot(metadata) +
+  geom_point(aes(x = sample, y= genome_size))
+</code></pre></div>
+<p>The labels on the x-axis are quite hard to read. To do this we need to add an additional theme layer. The ggplot2 <code>theme</code> system handles non-data plot elements such as:</p>
+
+<ul>
+<li>Axis labels</li>
+<li>Plot background</li>
+<li>Facet label backround</li>
+<li>Legend appearance</li>
+</ul>
+
+<p>There are built-in themes we can use, or we can adjust specific elements. For our figure we will change the x-axis labels to be plotted on a 45 degree angle with a small horizontal shift to avoid overlap. We will also add some additional aesthetics by mapping them to other variables in our dataframe. <em>For example, the color of the points will reflect the number of generations and the shape will reflect citrate mutant status.</em> The size of the points can be adjusted within the <code>geom_point</code> but does not need to be included in <code>aes()</code> since the value is not mapping to a variable.</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">ggplot(metadata) +
+  geom_point(aes(x = sample, y= genome_size, color = generation, shape = cit), size = rel(3.0)) +
+  theme(axis.text.x = element_text(angle=45, hjust=1))
+</code></pre></div>
+<h3>Histogram</h3>
+
+<p>To plot a histogram we require another geometric object <code>geom_bar</code>, which requires a statistical transformation. Some plot types (such as scatterplots) do not require transformations, each point is plotted at x and y coordinates equal to the original value. Other plots, such as boxplots, histograms, prediction lines etc. need to be transformed, and usually has a default statistic that can be changed via the <code>stat_bin</code> argument. </p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">ggplot(metadata) +
+  geom_bar(aes(x = genome_size))
+
+</code></pre></div>
+<p>Try plotting with the default value and compare it to the plot using the binwidth values. How do they differ?</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">ggplot(metadata) +
+  geom_bar(aes(x = genome_size), stat = "bin", binwidth=0.05)
+
+</code></pre></div>
+<h3>Boxplot</h3>
+
+<p>Now that we have all the required information on let&#39;s try plotting a boxplot similar to what we had done using the base plot functions at the start of this lesson. We can add some additional layers to include a plot title and change the axis labels. Explore the code below and all the different layers that we have added to understand what each layer contributes to the final graphic.</p>
+<div class="highlight"><pre><code class="language-r, fig.align='center'" data-lang="r, fig.align='center'">ggplot(metadata) +
+  geom_boxplot(aes(x = cit, y = genome_size, fill = cit)) +
+  ggtitle('Boxplot of genome size by citrate mutant type') +
+  xlab('citrate mutant') +
+  ylab('genome size') +
+  theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=45, hjust=1),
+          axis.title = element_text(size = rel(1.5)),
+          axis.text = element_text(size = rel(1.25)))
+
+</code></pre></div>
+<h3>Writing figures to file</h3>
+
+<p>There are two ways in which figures and plots can be output to a file (rather than simply displaying on screen). The first (and easiest) is to export directly from the RStudio &#39;Plots&#39; panel, by clicking on <code>Export</code> when the image is plotted. This will give you the option of <code>png</code> or <code>pdf</code> and selecting the directory to which you wish to save it to. The second option is to use R functions in the console, allowing you the flexibility to specify parameters to dictate the size and resolution of the output image. Some of the more popular formats include <code>pdf()</code>, <code>png</code>.</p>
+
+<p>Initialize a plot that will be written directly to a file using <code>pdf</code>, <code>png</code> etc. Within the function you will need to specify a name for your image, and the with and height (optional). Then create a plot using the usual functions in R. Finally, close the file using the <code>dev.off()</code> function. There are also <code>bmp</code>, <code>tiff</code>, and <code>jpeg</code> functions, though the jpeg function has proven less stable than the others.</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">pdf("figure/boxplot.pdf")
+
+ggplot(example_data) +
+  geom_boxplot(aes(x = cit, y =....) +
+  ggtitle(...) +
+  xlab(...) +
+  ylab(...) +
+  theme(panel.grid.major = element_line(...),
+          axis.text.x = element_text(...),
+          axis.title = element_text(...),
+          axis.text = element_text(...)
+
+dev.off()
+</code></pre></div>
+<h3>More Resources:</h3>
+
+<p>We have only scratched the surface here. To learn more see:
+-  <a href="http://docs.ggplot2.org/">ggplot reference site</a>
+- Winston Chang&#39;s excellent <a href="http://wiki.stdout.org/rcookbook/Graphs/">Cookbook for R</a> site. 
+- Though slightly out of date, <a href="http://www.amazon.com/ggplot2-Elegant-Graphics-Data-Analysis/dp/0387981403">ggplot2: Elegant Graphics for Data Anaysis</a> is still the definative book on this subject. </p>
+
+<p><em>Much of the material here was adpapted from <a href="http://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html">Introduction to R graphics with ggplot2 Tutorial at IQSS</a>.</em></p>
+
+	  <!-- end content -->
+	</div>
+      </div>
+
+      <div class="footer">
+  <a class="label swc-blue-bg" href="">Facebook</a>
+  <a class="label swc-blue-bg" href="">Google+</a>
+  <a class="label swc-blue-bg" href="">Twitter</a>
+  <a class="label swc-blue-bg" href="">GitHub</a>
+  <a class="label swc-blue-bg" href="/LICENSE.html">License</a>
+  <a class="bugreport label swc-blue-bg" href="mailto:?subject=bug%20in%2005-genomics-visualization-r.md">Bug Report</a>
+</div>
+
+    </div>
+    <!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/jquery-1.9.1.min.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
+
+  </body>
+</html>

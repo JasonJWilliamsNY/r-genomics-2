@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+      <title>Introduction to R and R Studio</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+<link href="./css/bootstrap/bootstrap.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="./css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="./css/swc.css" />
+<link rel="stylesheet" type="text/css" href="./css/swc-bootstrap.css" />
+<meta charset="UTF-8" />
+<meta http-equiv="last-modified" content="" />
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="./css/lesson.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="banner">
+  <a href="http://datacarpentry.org" title="Data Carpentry">
+    <img alt="Data Carpentry banner" src="./img/DC1_logo_small.png" height="50px" />
+  </a>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span10 offset1">
+	  <!-- start content -->
+          
+          <h1>Introduction to R and R Studio</h1>
+          
+          <h2>Learning Objectives</h2>
+
+<ul>
+<li>Articulating motivations for this lesson</li>
+<li>Introduce participants to the RStudio interface</li>
+<li>Set up participants to have a working directory with a <code>data/</code> folder inside</li>
+<li>Introduce R syntax</li>
+<li>Point to relevant information on how to get help, and understand how to ask well formulated questions</li>
+</ul>
+
+<h2>Lesson</h2>
+
+<h3>Presentation of RStudio</h3>
+
+<p>Start RStudio -- Let&#39;s start by learning about our tool.</p>
+
+<p><strong>Using RStudio Server from the Workshop Cloud</strong></p>
+
+<p>To connect to this web version of R:</p>
+
+<ol>
+<li>Open a web browser and enter the same IP address you were given at the workshop + <strong>:8787</strong> (for example: http://ec2-11-11-111-11.compute-1.amazonaws.com:8787/)</li>
+<li>Enter dcuser and the dcuser password to login</li>
+</ol>
+
+<p><strong>Using RStudio on your Desktop</strong></p>
+
+<p>Start RStudio (Download <a href="https://www.rstudio.com/products/rstudio-desktop/">here</a></p>
+
+<h4>Before we get started</h4>
+
+<ul>
+<li>Under the <code>File</code> menu, click on <code>New project</code>, choose <code>New directory</code>, then
+<code>Empty project</code></li>
+<li>Enter a name for this new folder, and choose a convenient location for
+it. This will be your <strong>working directory</strong> for the rest of the day
+(e.g., <code>~/dc_sample_data/r-genomics</code>)</li>
+<li>Click on &quot;Create project&quot;</li>
+<li>Under the <code>Files</code> tab on the right of the screen, click on <code>New Folder</code> and
+create a folder named <code>data</code> within your newly created working directory.
+(e.g., <code>~/dc_sample_data/r-genomics/data</code>)</li>
+<li>Create a new R script (File &gt; New File &gt; R script) and save it in your working
+directory (e.g. <code>data-carpentry-script.R</code>)</li>
+</ul>
+
+<p>Your working directory should now look like this:</p>
+
+<p><img src="img/intro-rstudio.png" alt="How it should look like at the beginning of this lesson"></p>
+
+<h1>Interacting with R</h1>
+
+<p>There are two main ways of interacting with R: using the console or by using
+script files (plain text files that contain your code).</p>
+
+<p>The console window (in RStudio, the bottom left panel) is the place where R is
+waiting for you to tell it what to do, and where it will show the results of a
+command.  You can type commands directly into the console, but they will be
+forgotten when you close the session. It is better to enter the commands in the
+script editor, and save the script. This way, you have a complete record of what
+you did, you can easily show others how you did it and you can do it again later
+on if needed. You can copy-paste into the R console, but the Rstudio script
+editor allows you to &#39;send&#39; the current line or the currently selected text to
+the R console using the <code>Ctrl-Enter</code> shortcut.</p>
+
+<p>If R is ready to accept commands, the R console shows a <code>&gt;</code> prompt. If it
+receives a command (by typing, copy-pasting or sent from the script editor using
+<code>Ctrl-Enter</code>), R will try to execute it, and when ready, show the results and
+come back with a new <code>&gt;</code>-prompt to wait for new commands.</p>
+
+<p>If R is still waiting for you to enter more data because it isn&#39;t complete yet,
+the console will show a <code>+</code> prompt. It means that you haven&#39;t finished entering
+a complete command. This is because you have not &#39;closed&#39; a parenthesis or
+quotation. If you&#39;re in Rstudio and this happens, click inside the console
+window and press <code>Esc</code>; this should help you out of trouble.</p>
+
+<h1>Basics of R</h1>
+
+<p>R is a versatile, open source programming/scripting language that&#39;s useful both
+for statistics but also data science. Inspired by the programming language S.</p>
+
+<ul>
+<li>Open source software under GPL.</li>
+<li>Superior (if not just comparable) to commercial alternatives. R has over 7,000
+user contributed packages at this time. It&#39;s widely used both in academia and
+industry.</li>
+<li>Available on all platforms.</li>
+<li>Not just for statistics, but also general purpose programming.</li>
+<li>For people who have experience in programmming: R is both an object-oriented
+and a so-called <a href="http://adv-r.had.co.nz/Functional-programming.html">functional language</a></li>
+<li>Large and growing community of peers.</li>
+</ul>
+
+<h2>Organizing your working directory</h2>
+
+<p>You should separate the original data (raw data) from intermediate datasets that
+you may create for the need of a particular analysis. For instance, you may want
+to create a <code>data/</code> directory within your working directory that stores the raw
+data, and have a <code>data_output/</code> directory for intermediate datasets and a
+<code>figure_output/</code> directory for the plots you will generate.</p>
+
+<h2>Seeking help</h2>
+
+<h3>I know the name of the function I want to use, but I&#39;m not sure how to use it</h3>
+
+<p>If you need help with a specific function, let&#39;s say <code>barplot()</code>, you can type:</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">?barplot
+</code></pre></div>
+<p>If you just need to remind yourself of the names of the arguments, you can use:</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">args(lm)
+</code></pre></div>
+<p>If the function is part of a package that is installed on your computer but
+don&#39;t remember which one, you can type:</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">??geom_point
+</code></pre></div>
+<h3>I want to use a function that does X, there must be a function for it but I don&#39;t know which one...</h3>
+
+<p>If you are looking for a function to do a particular task, you can use
+<code>help.search()</code> (but only looks through the installed packages):</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">help.search("kruskal")
+</code></pre></div>
+<p>If you can&#39;t find what you are looking for, you can use the
+<a href="http://www.rdocumentation.org">rdocumention.org</a> website that search through
+the help files across all packages available.</p>
+
+<h3>I am stuck... I get an error message that I don&#39;t understand</h3>
+
+<ul>
+<li><p>Start by <strong>googling the error message</strong>. However, this doesn&#39;t always work very well because often, package developers rely on the error catching provided by R. You end up with general error messages that might not be very helpful to diagnose a problem (e.g. &quot;subscript out of bounds&quot;).</p></li>
+<li><p>check <strong>Stack Overflow</strong>. Search using the <code>[r]</code> tag. Most
+questions have already been answered, but the challenge is to use the right
+words in the search to find the answers: <a href="http://stackoverflow.com/questions/tagged/r">http://stackoverflow.com/questions/tagged/r</a></p></li>
+<li><p>The <a href="http://cran.r-project.org/doc/manuals/R-intro.pdf">Introduction to R</a> can also be dense for people with little programming experience but it is a good place to understand the underpinnings of the R language.</p></li>
+<li><p>The <a href="http://cran.r-project.org/doc/FAQ/R-FAQ.html">R FAQ</a> is dense and technical but it is full of useful information.</p></li>
+</ul>
+
+<h3>Asking for help</h3>
+
+<p>The key to get help from someone is for them to grasp your problem rapidly. You
+should make it as easy as possible to pinpoint where the issue might be.</p>
+
+<p>Try to use the correct words to describe your problem. For instance, a package
+is not the same thing as a library. Most people will understand what you meant,
+but others have really strong feelings about the difference in meaning. The key
+point is that it can make things confusing for people trying to help you. Be as
+precise as possible when describing your problem</p>
+
+<p>If possible, try to reduce what doesn&#39;t work to a simple reproducible
+example. If you can reproduce the problem using a very small <code>data.frame</code>
+instead of your 50,000 rows and 10,000 columns one, provide the small one with
+the description of your problem. When appropriate, try to generalize what you
+are doing so even people who are not in your field can understand the question.</p>
+
+<p>To share an object with someone else, if it&#39;s relatively small, you can use the
+function <code>dput()</code>. It will output R code that can be used to recreate the exact same
+object as the one in memory:</p>
+<div class="highlight"><pre><code class="language-r, results='show'" data-lang="r, results='show'">dput(head(iris)) # iris is an example data.frame that comes with R
+</code></pre></div>
+<p>If the object is larger, provide either the raw file (i.e., your CSV file) with
+your script up to the point of the error (and after removing everything that is
+not relevant to your issue). Alternatively, in particular if your questions is
+not related to a <code>data.frame</code>, you can save any R object to a file:</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">saveRDS(iris, file="/tmp/iris.rds")
+</code></pre></div>
+<p>The content of this file is however not human readable and cannot be posted
+directly on stackoverflow. It can however be sent to someone by email who can read
+it with this command:</p>
+<div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">some_data &lt;- readRDS(file="~/Downloads/iris.rds")
+</code></pre></div>
+<p>Last, but certainly not least, <strong>always include the output of <code>sessionInfo()</code></strong>
+as it provides critical information about your platform, the versions of R and
+the packages that you are using, and other information that can be very helpful
+to understand your problem.</p>
+<div class="highlight"><pre><code class="language-r, results='show'" data-lang="r, results='show'">sessionInfo()
+</code></pre></div>
+<h3>Where to ask for help?</h3>
+
+<ul>
+<li>Your friendly colleagues: if you know someone with more experience than you,
+they might be able and willing to help you.</li>
+<li>Stackoverlow: if your question hasn&#39;t been answered before and is well
+crafted, chances are you will get an answer in less than 5 min.</li>
+<li>The <a href="https://stat.ethz.ch/mailman/listinfo/r-help">R-help</a>: it is read by a lot of people (including most of the R core team), a lot of people post to it, but the tone can be pretty dry, and it is not always very welcoming to new users. If your question is valid, you are likely to get an answer very fast but don&#39;t expect that it will come with smiley faces. Also, here more than everywhere else, be sure to use correct vocabulary (otherwise you might get an answer pointing to the misuse of your words rather than answering your question). You will also have more success if your question is about a base function rather than a specific package.</li>
+<li>If your question is about a specific package, see if there is a mailing list for it. Usually it&#39;s included in the DESCRIPTION file of the package that can be accessed using <code>packageDescription(&quot;name-of-package&quot;)</code>. You may also want to try to email the author of the package directly.</li>
+<li>There are also some topic-specific mailing lists (GIS, phylogenetics, etc...), the complete list is <a href="http://www.r-project.org/mail.html">here</a>.</li>
+</ul>
+
+<h3>Resources:</h3>
+
+<ul>
+<li>The <a href="http://www.r-project.org/posting-guide.html">Posting Guide</a> for the R mailing lists.</li>
+<li><a href="http://blog.revolutionanalytics.com/2014/01/how-to-ask-for-r-help.html">How to ask for R help</a> useful guidelines</li>
+</ul>
+
+	  <!-- end content -->
+	</div>
+      </div>
+
+      <div class="footer">
+  <a class="label swc-blue-bg" href="">Facebook</a>
+  <a class="label swc-blue-bg" href="">Google+</a>
+  <a class="label swc-blue-bg" href="">Twitter</a>
+  <a class="label swc-blue-bg" href="">GitHub</a>
+  <a class="label swc-blue-bg" href="./LICENSE.html">License</a>
+  <a class="bugreport label swc-blue-bg" href="mailto:?subject=bug%20in%2000-intro-to-r-rstudio.md">Bug Report</a>
+</div>
+
+    </div>
+    <!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="./js/jquery-1.9.1.min.js"></script>
+<script src="./js/bootstrap/bootstrap.min.js"></script>
+
+  </body>
+</html>

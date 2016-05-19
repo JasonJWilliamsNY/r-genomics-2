@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+      <title>Introduction to R</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link href="/css/bootstrap/bootstrap.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="/css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="/css/swc.css" />
+<link rel="stylesheet" type="text/css" href="/css/swc-bootstrap.css" />
+<meta charset="UTF-8" />
+<meta http-equiv="last-modified" content="" />
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/css/lesson.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="banner">
+  <a href="http://datacarpentry.org" title="Data Carpentry">
+    <img alt="Data Carpentry banner" src="/img/DC1_logo_small.png" height="50px" />
+  </a>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span10 offset1">
+	  <!-- start content -->
+          
+          <h1>Introduction to R</h1>
+          
+          <h2>Learning Objectives</h2>
+
+<ul>
+<li>Familiarize participants with R syntax</li>
+<li>Understand the concepts of objects and assignment</li>
+<li>Understand the concepts of vector and data types</li>
+<li>Get exposed to a few functions</li>
+</ul>
+
+<h1>Lesson</h1>
+
+<h2>The R syntax</h2>
+
+<p><em>Start by showing an example of a script</em></p>
+
+<ul>
+<li>Point to the different parts:
+
+<ul>
+<li>a function</li>
+<li>the assignment operator <code>&lt;-</code></li>
+<li>the <code>=</code> for arguments</li>
+<li>the comments <code>#</code> and how they are used to document function and its content</li>
+<li>the <code>$</code> operator</li>
+</ul></li>
+<li>Point to indentation and consistency in spacing to improve clarity</li>
+</ul>
+
+<h3>Creating objects</h3>
+
+<p>You can get output from R simply by typing in math in the console</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">3 + 5
+12/7
+</code></pre></div>
+<p>We can also comment what it is we&#39;re doing</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE"># I am adding 3 and 5. R is fun!
+3+5
+</code></pre></div>
+<p>What happens if we do that same command with the # sign in the front?</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE, eval=FALSE" data-lang="r, purl=FALSE, eval=FALSE">I am adding 3 and 5. R is fun!
+3+5
+</code></pre></div>
+<p>Now R is trying to run that sentence as a command, and it  doesn&#39;t work. Now we&#39;re stuck over in the console. The <code>+</code> sign means that it&#39;s still waiting for input, so we can&#39;t type in a new command. To get out of this type <code>Esc</code>. This will work whenever you&#39;re stuck with that <code>+</code> sign. </p>
+
+<p>It&#39;s great that R is a glorified caluculator, but obviously
+we want to do more interesting things. </p>
+
+<p>To do useful and interesting things, we need to assign <em>values</em> to <em>objects</em>. To create objects, we need to give it a name followed by the assignment operator <code>&lt;-</code> and the value we want to give it.</p>
+
+<h2>Assignment operator</h2>
+
+<p>For instance, instead of adding 3 + 5, we can assign those
+values to objects and then add them.</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE"># assign 3 to a
+a &lt;- 3
+# assign 5 to b
+b &lt;- 5
+
+# what now is a
+a
+# what now is b
+b
+
+#Add a and b
+a + b
+</code></pre></div>
+<p><code>&lt;-</code> is the assignment operator. It assigns values on the right to objects on the left. So, after executing <code>x &lt;- 3</code>, the value of <code>x</code> is <code>3</code>. The arrow can be read as 3 <strong>goes into</strong> <code>x</code>.  You can also use <code>=</code> for assignments but not in all contexts so it is good practice to use <code>&lt;-</code> for assignments. <code>=</code> should only
+be used to specify the values of arguments in functions, see below.</p>
+
+<p>In RStudio, typing <code>Alt + -</code> (push <code>Alt</code>, the key next to your space bar at the same time as the <code>-</code> key) will write <code>&lt;-</code> in a single keystroke.</p>
+
+<h3>Exercise</h3>
+
+<ul>
+<li>What happens if we change <code>a</code> and then re-add <code>a</code> and <code>b</code>?</li>
+<li>Does it work if you just change <code>a</code> in the script and then add <code>a</code> and <code>b</code>? Did you still get the same answer after they changed <code>a</code>? If so, why do you think that might be?</li>
+<li>We can also assign a + b to a new variable, <code>c</code>. How would you do this?</li>
+</ul>
+
+<h2>Notes on objects</h2>
+
+<p>Objects can be given any name such as <code>x</code>, <code>current_temperature</code>, or <code>subject_id</code>. You want your object names to be explicit and not too long. They cannot start with a number (<code>2x</code> is not valid but <code>x2</code> is). R is case sensitive (e.g., <code>genome_length_mb</code> is different from <code>genome_length_mb</code>). There are some names that cannot be used because they represent the names of fundamental functions in R (e.g., <code>if</code>, <code>else</code>, <code>for</code>, see <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/Reserved.html">here</a> for a complete list). In general, even if it&#39;s allowed, it&#39;s best to not use other function names (e.g., <code>c</code>, <code>T</code>, <code>mean</code>, <code>data</code>, <code>df</code>, <code>weights</code>). In doubt check the help to see if the name is already in use. It&#39;s also best to avoid dots (<code>.</code>) within a variable name as in <code>my.dataset</code>. There are many functions in R with dots in their names for historical reasons, but because dots have a special meaning in R (for methods) and other programming languages, it&#39;s best to avoid them. It is also recommended to use nouns for variable names, and verbs for function names. It&#39;s important to be consistent in the styling of your code (where you put spaces, how you name variable, etc.). In R, two popular style guides are <a href="http://adv-r.had.co.nz/Style.html">Hadley Wickham&#39;s</a> and <a href="https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml">Google&#39;s</a>.</p>
+
+<p>When assigning a value to an object, R does not print anything. You can force to print the value by using parentheses or by typing the name:</p>
+
+<h2>Functions</h2>
+
+<p>The other key feature of R are functions. These are R&#39;s built in capabilities. Some examples of these are mathematical functions, like
+<code>sqrt</code> and <code>round</code>. You can also get functions from libraries (which we&#39;ll talk about in a bit), or even write your own. </p>
+
+<h2>Functions and their arguments</h2>
+
+<p>Functions are &quot;canned scripts&quot; that automate something complicated or convenient or both.  Many functions are predefined, or become available when using the function <code>library()</code> (more on that later). A function usually gets one or more inputs called <em>arguments</em>. Functions often (but not always) return a <em>value</em>. A typical example would be the function <code>sqrt()</code>. The input (the argument) must be a number, and the return value (in fact, the output) is the square root of that number. Executing a function (&#39;running it&#39;) is called <em>calling</em> the function. An example of a function call is:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">sqrt(a)
+</code></pre></div>
+<p>Here, the value of <code>a</code> is given to the <code>sqrt()</code> function, the <code>sqrt()</code> function calculates the square root. This function is very simple, because it takes just one argument. </p>
+
+<p>The return &#39;value&#39; of a function need not be numerical (like that of <code>sqrt()</code>), and it also does not need to be a single item: it can be a set of things, or even a data set. We&#39;ll see that when we read data files in to R. </p>
+
+<p>Arguments can be anything, not only numbers or filenames, but also other objects. Exactly what each argument means differs per function, and must be looked up in the documentation (see below). If an argument alters the way the function operates, such as whether to ignore &#39;bad values&#39;, such an argument is sometimes called an <em>option</em>.</p>
+
+<p>Most functions can take several arguments, but many have so-called <em>defaults</em>. If you don&#39;t specify such an argument when calling the function, the function itself will fall back on using the <em>default</em>. This is a standard value that the author of the function specified as being &quot;good enough in standard cases&quot;. An example would be what symbol to use in a plot. However, if you want something specific, simply change the argument yourself with a value of your choice.</p>
+
+<p>Let&#39;s try a function that can take multiple arguments <code>round</code>.</p>
+<div class="highlight"><pre><code class="language-r, results='show'" data-lang="r, results='show'">round(3.14159)
+</code></pre></div>
+<p>We can see that we get <code>3</code>. That&#39;s because the default is to round
+to the nearest whole number. If we want more digits we can see 
+how to do that by getting information about the <code>round</code> function.
+We can use <code>args(round)</code> or look at the
+help for this function using <code>?round</code>.</p>
+<div class="highlight"><pre><code class="language-r, results='show'" data-lang="r, results='show'">args(round)
+</code></pre></div><div class="highlight"><pre><code class="language-r, eval=FALSE" data-lang="r, eval=FALSE">?round
+</code></pre></div>
+<p>We see that if we want a different number of digits, we can 
+type <code>digits=2</code> or however many we want.</p>
+<div class="highlight"><pre><code class="language-r, results='show'" data-lang="r, results='show'">round(3.14159, digits=2)
+</code></pre></div>
+<p>If you provide the arguments in the exact same order as they are defined you don&#39;t have to name them:</p>
+<div class="highlight"><pre><code class="language-r, results='show'" data-lang="r, results='show'">round(3.14159, 2)
+</code></pre></div>
+<p>However, it&#39;s usually not recommended practice because it&#39;s a lot of remembering to do, and if you share your code with others that includes less known functions it makes your code difficult to read. (It&#39;s however OK to not include the names of the arguments for basic functions like <code>mean</code>, <code>min</code>, etc...)</p>
+
+<p>Another advantage of naming arguments, is that the order doesn&#39;t matter. This is useful when there start to be more arguments. </p>
+
+<h3>Exercise</h3>
+
+<p>We&#39;re going to work with genome lengths.
+- Create a variable <code>genome_length_mb</code> and assign it the value <code>4.6</code></p>
+
+<h2>Solution</h2>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">(genome_length_mb &lt;- 4.6)
+genome_length_mb
+</code></pre></div>
+<h3>Exercise</h3>
+
+<p>Now that R has <code>genome_length_mb</code> in memory, we can do arithmetic with it. For instance, we may want to convert this to the weight of the genome in  picograms (for some reason). 978Mb = 1picogram. Divide the 
+genome length in Mb by 978. </p>
+
+<h3>Solution</h3>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">genome_length_mb / 978.0
+</code></pre></div>
+<p>It turns out an E. coli genome doesn&#39;t weigh very much.</p>
+
+<h3>Exercise</h3>
+
+<p>We can also change the variable&#39;s value by assigning it a new one. Say
+we want to think about a human genome rather than E. coli. Change <code>genome_length_mb</code> to 3000 and figure out the weight of the human 
+genome. </p>
+
+<h3>Solution</h3>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">genome_length_mb &lt;- 3000.0
+genome_length_mb / 978.0
+</code></pre></div>
+<p>This means that assigning a value to one variable does not change the values of
+other variables.  For example, let&#39;s store the genome&#39;s weight in a variable.</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">genome_weight_pg &lt;- genome_length_mb / 978.0
+</code></pre></div>
+<p>and then change <code>genome_length_mb</code> to 100.</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">genome_length_mb &lt;- 100
+</code></pre></div>
+<h3>Exercise</h3>
+
+<p>What do you think is the current content of the object <code>genome_weight_pg</code>? 3.06 or 0.102?</p>
+
+<h2>Vectors and data types</h2>
+<div class="highlight"><pre><code class="language-r, echo=FALSE, purl=TRUE" data-lang="r, echo=FALSE, purl=TRUE">### Vectors and data types
+</code></pre></div>
+<p>A vector is the most common and basic data structure in R, and is pretty much the workhorse of R. It&#39;s basically just a list of values, mainly either numbers or characters. They&#39;re special lists that you can do math with. You can assign this list of values to a variable, just like you would for one item. For example we can create a vector of genome lengths:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">glengths &lt;- c(4.6, 3000, 50000)
+glengths
+</code></pre></div>
+<p>A vector can also contain characters:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">species &lt;- c("ecoli", "human", "corn")
+species
+</code></pre></div>
+<p>There are many functions that allow you to inspect the content of a
+vector. <code>length()</code> tells you how many elements are in a particular vector:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">length(glengths)
+length(species)
+</code></pre></div>
+<p>You can also do math with whole vectors. For instance if we wanted to multiply the genome lengths of all the genomes in the list, we can do</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">5 * glengths
+</code></pre></div>
+<p>or we can add the data in the two vectors together</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">new_lengths &lt;- glengths + glengths
+new_lengths
+</code></pre></div>
+<p>This is very useful if we have data in different vectors that we 
+want to combine or work with. There are few ways to figure out what&#39;s going on in a vector. </p>
+
+<p><code>class()</code> indicates the class (the type of element) of an object:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">class(glengths)
+class(species)
+</code></pre></div>
+<p>The function <code>str()</code> provides an overview of the object and the elements it contains. It is a really useful function when working with large and complex objects:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">str(glengths)
+str(species)
+</code></pre></div>
+<p>You can add elements to your vector simply by using the <code>c()</code> function:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">lengths &lt;- c(glengths, 90) # adding at the end
+lengths &lt;- c(30, glengths) # adding at the beginning
+lengths
+</code></pre></div>
+<p>What happens here is that we take the original vector <code>glengths</code>, and we are adding another item first to the end of the other ones, and then another item at the beginning. We can do this over and over again to build a vector or a dataset. As we program, this may be useful to autoupdate results that we are collecting or calculating.</p>
+
+<p>We just saw 2 of the 6 <strong>data types</strong> that R uses: <code>&quot;character&quot;</code> and
+<code>&quot;numeric&quot;</code>. The other 4 are:       </p>
+
+<ul>
+<li><code>&quot;logical&quot;</code> for <code>TRUE</code> and <code>FALSE</code> (the boolean data type)</li>
+<li><code>&quot;integer&quot;</code> for integer numbers (e.g., <code>2L</code>, the <code>L</code> indicates to R that it&#39;s an integer)</li>
+<li><code>&quot;complex&quot;</code> to represent complex numbers with real and imaginary parts (e.g.,
+<code>1+4i</code>) and that&#39;s all we&#39;re going to say about them</li>
+<li><code>&quot;raw&quot;</code> that we won&#39;t discuss further</li>
+</ul>
+
+<p>Vectors are one of the many <strong>data structures</strong> that R uses. Other important ones are lists (<code>list</code>), matrices (<code>matrix</code>), data frames (<code>data.frame</code>) and factors (<code>factor</code>).</p>
+
+	  <!-- end content -->
+	</div>
+      </div>
+
+      <div class="footer">
+  <a class="label swc-blue-bg" href="">Facebook</a>
+  <a class="label swc-blue-bg" href="">Google+</a>
+  <a class="label swc-blue-bg" href="">Twitter</a>
+  <a class="label swc-blue-bg" href="">GitHub</a>
+  <a class="label swc-blue-bg" href="/LICENSE.html">License</a>
+  <a class="bugreport label swc-blue-bg" href="mailto:?subject=bug%20in%2001-intro-to-r.md">Bug Report</a>
+</div>
+
+    </div>
+    <!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/jquery-1.9.1.min.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
+
+  </body>
+</html>

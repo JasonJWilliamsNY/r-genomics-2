@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+      <title>Aggregating and analyzing data with dplyr</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link href="/css/bootstrap/bootstrap.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="/css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="/css/swc.css" />
+<link rel="stylesheet" type="text/css" href="/css/swc-bootstrap.css" />
+<meta charset="UTF-8" />
+<meta http-equiv="last-modified" content="" />
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/css/lesson.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="banner">
+  <a href="http://datacarpentry.org" title="Data Carpentry">
+    <img alt="Data Carpentry banner" src="/img/DC1_logo_small.png" height="50px" />
+  </a>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span10 offset1">
+	  <!-- start content -->
+          
+          <h1>Aggregating and analyzing data with dplyr</h1>
+          
+          <h2>Learning Objectives</h2>
+
+<ul>
+<li>understand what an R package is</li>
+<li>understand how to use <code>dplyr</code> to manipulate and clean data</li>
+</ul>
+
+<h2>Lesson</h2>
+
+<h3>Data manipulation using dplyr</h3>
+
+<p>Bracket subsetting is handy, but it can be cumbersome and difficult to read, especially for complicated operations. Enter <code>dplyr</code>. <code>dplyr</code> is a package for making data manipulation easier.</p>
+
+<p>Packages in R are basically sets of additional functions that let you do more stuff in R. The functions we&#39;ve been using, like <code>str()</code>, come built into R; packages give you access to more functions. You need to install a package and then load it to be able to use it. <strong>Note:</strong> on the genomics workshop cloud machines we have already installed this for you. </p>
+<div class="highlight"><pre><code class="language-r, eval = FALSE, purl = FALSE" data-lang="r, eval = FALSE, purl = FALSE">install.packages("dplyr") ## install
+</code></pre></div>
+<p>You might get asked to choose a CRAN mirror -- this is basically asking you to choose a site to download the package from. The choice doesn&#39;t matter too much; we recommend choosing the RStudio mirror.</p>
+<div class="highlight"><pre><code class="language-r, message = FALSE, purl = FALSE" data-lang="r, message = FALSE, purl = FALSE">library("dplyr")          ## load
+</code></pre></div>
+<p>You only need to install a package once per computer, but you need to load it every time you open a new R session and want to use that package.</p>
+
+<h3>What is dplyr?</h3>
+
+<p>The package <code>dplyr</code> is a fairly new (2014) package that tries to provide easy tools for the most common data manipulation tasks. It is built to work directly with data frames. The thinking behind it was largely inspired by the package <code>plyr</code> which has been in use for some time but suffered from being slow in some cases.<code>dplyr</code> addresses this by porting much of the computation to C++. An additional feature is the ability to work with data stored directly in an external database. The benefits of doing this are that the data can be managed
+natively in a relational database, queries can be conducted on that database, and only the results of the query returned.</p>
+
+<p>This addresses a common problem with R in that all operations are conducted in memory and thus the amount of data you can work with is limited by available memory. The database connections essentially remove that limitation in that you can have a database of many 100s GB, conduct queries on it directly and pull back just what you need for analysis in R.</p>
+
+<h3>Selecting columns and filtering rows</h3>
+
+<p>We&#39;re going to learn some of the most common <code>dplyr</code> functions: <code>select()</code>, <code>filter()</code>, <code>mutate()</code>, <code>group_by()</code>, and <code>summarize()</code>. To select columns of a data frame, use <code>select()</code>. The first argument to this function is the data frame (<code>metadata</code>), and the subsequent arguments are the columns to keep.</p>
+<div class="highlight"><pre><code class="language-r, results = 'hide', purl = FALSE" data-lang="r, results = 'hide', purl = FALSE">select(metadata, sample, clade, cit, genome_size)
+</code></pre></div>
+<p>To choose rows, use <code>filter()</code>:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE" data-lang="r, purl = FALSE">filter(metadata, cit == "plus")
+</code></pre></div>
+<h3>Pipes</h3>
+
+<p>But what if you wanted to select and filter? There are three ways to do this: use intermediate steps, nested functions, or pipes. With the intermediate steps, you essentially create a temporary data frame and use that as input to the next function. This can clutter up your workspace with lots of objects. You can also nest functions (i.e. one function inside of another).  This is handy, but can be
+difficult to read if too many functions are nested as the process from inside out. The last option, pipes, are a fairly recent addition to R. Pipes let you take the output of one function and send it directly to the next, which is useful when you need to many things to the same data set.  Pipes in R look like <code>%&gt;%</code> and are made available via the <code>magrittr</code> package installed as part of <code>dplyr</code>.</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE" data-lang="r, purl = FALSE">metadata %&gt;%
+  filter(cit == "plus") %&gt;%
+  select(sample, generation, clade)
+</code></pre></div>
+<p>In the above we use the pipe to send the <code>metadata</code> data set first through <code>filter</code>, to keep rows where <code>cit</code> was equal to &#39;plus&#39;, and then through <code>select</code> to keep the <code>sample</code> and <code>generation</code> and <code>clade</code> columns. When the data frame is being passed to the <code>filter()</code> and <code>select()</code> functions through a pipe, we don&#39;t need to include it as an argument to these functions anymore.</p>
+
+<p>If we wanted to create a new object with this smaller version of the data we could do so by assigning it a new name:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE" data-lang="r, purl = FALSE">meta_citplus &lt;- metadata %&gt;%
+  filter(cit == "plus") %&gt;%
+  select(sample, generation, clade)
+
+meta_citplus
+</code></pre></div>
+<h3>Challenge</h3>
+
+<ol>
+<li>Using pipes, subset the data to include rows where the clade is &#39;Cit+&#39;. Retain columns  <code>sample</code>, <code>cit</code>, and <code>genome_size.</code></li>
+</ol>
+
+<h3>Mutate</h3>
+
+<p>Frequently you&#39;ll want to create new columns based on the values in existing columns, for example to do unit conversions or find the ratio of values in two columns. For this we&#39;ll use <code>mutate()</code>.</p>
+
+<p>To create a new column of genome size in bp:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE, eval=FALSE" data-lang="r, purl = FALSE, eval=FALSE">metadata %&gt;%
+  mutate(genome_bp = genome_size *1e6)
+</code></pre></div>
+<p>If this runs off your screen and you just want to see the first few rows, you can use a pipe to view the <code>head()</code> of the data (pipes work with non-dplyr functions too, as long as the <code>dplyr</code> or <code>magrittr</code> packages are loaded).</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE, eval=FALSE" data-lang="r, purl = FALSE, eval=FALSE">metadata %&gt;%
+  mutate(genome_bp = genome_size *1e6) %&gt;%
+  head
+</code></pre></div>
+<p>The row has a NA value for clade, so if we wanted to remove those we could insert a <code>filter()</code> in this chain:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE, eval=FALSE" data-lang="r, purl = FALSE, eval=FALSE">metadata %&gt;%
+  mutate(genome_bp = genome_size *1e6) %&gt;%
+  filter(!is.na(clade)) %&gt;%
+  head
+</code></pre></div>
+<p><code>is.na()</code> is a function that determines whether something is or is not an <code>NA</code>. The <code>!</code> symbol negates it, so we&#39;re asking for everything that is not an <code>NA</code>.</p>
+
+<h3>Split-apply-combine data analysis and the summarize() function</h3>
+
+<p>Many data analysis tasks can be approached using the &quot;split-apply-combine&quot; paradigm: split the data into groups, apply some analysis to each group, and then combine the results. <code>dplyr</code> makes this very easy through the use of the <code>group_by()</code> function. <code>group_by()</code> splits the data into groups upon which some operations can be run. For example, if we wanted to group by citrate-using mutant status and find the number of rows of data for each status, we would do:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE" data-lang="r, purl = FALSE">metadata %&gt;%
+  group_by(cit) %&gt;%
+  tally()
+</code></pre></div>
+<p>There are several different summary statistics that can be generated from our data. The R base package provides many built-in functions such as <code>mean</code>, <code>median</code>, <code>min</code>, <code>max</code>, and <code>range</code>.  By default, all <strong>R functions operating on vectors that contains missing data will return NA</strong>. It&#39;s a way to make sure that users know they have missing data, and make a conscious decision on how to deal with it. When dealing with simple statistics like the mean, the easiest way to ignore <code>NA</code> (the missing data) is to use <code>na.rm=TRUE</code> (<code>rm</code> stands for remove).</p>
+
+<p><code>group_by()</code> is often used together with <code>summarize()</code> which collapses each group into a single-row summary of that group. <code>summarize()</code> can then be used to apply a function such as those that compute simple stats to give an overview for the group. So to view mean <code>genome_size</code> by mutant status:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE" data-lang="r, purl = FALSE">metadata %&gt;%
+  group_by(cit) %&gt;%
+  summarize(mean_size = mean(genome_size, na.rm = TRUE))
+</code></pre></div>
+<p>You can group by multiple columns too:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE" data-lang="r, purl = FALSE">metadata %&gt;%
+  group_by(cit, clade) %&gt;%
+  summarize(mean_size = mean(genome_size, na.rm = TRUE))
+
+</code></pre></div>
+<p>Looks like for one of these clones, the clade is missing. We could then discard those rows using <code>filter()</code>:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE, eval=FALSE" data-lang="r, purl = FALSE, eval=FALSE">metadata %&gt;%
+  group_by(cit, clade) %&gt;%
+  summarize(mean_size = mean(genome_size, na.rm = TRUE)) %&gt;%
+  filter(!is.na(clade))
+</code></pre></div>
+<p>All of a sudden this isn&#39;t running of the screen anymore. That&#39;s because <code>dplyr</code> has changed our <code>data.frame</code> to a <code>tbl_df</code>. This is a data structure that&#39;s very similar to a data frame; for our purposes the only difference is that it won&#39;t automatically show tons of data going off the screen.</p>
+
+<p>You can also summarize multiple variables at the same time:</p>
+<div class="highlight"><pre><code class="language-r, purl = FALSE, eval=FALSE" data-lang="r, purl = FALSE, eval=FALSE">metadata %&gt;%
+  group_by(cit, clade) %&gt;%
+  summarize(mean_size = mean(genome_size, na.rm = TRUE),
+            min_generation = min(generation))
+
+</code></pre></div>
+<h3>More Resources:</h3>
+
+<p><a href="http://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf">Handy dplyr cheatsheet</a></p>
+
+<p><em>Much of this lesson was copied or adapted from Jeff Hollister&#39;s <a href="http://usepa.github.io/introR/2015/01/14/03-Clean/">materials</a></em></p>
+
+	  <!-- end content -->
+	</div>
+      </div>
+
+      <div class="footer">
+  <a class="label swc-blue-bg" href="">Facebook</a>
+  <a class="label swc-blue-bg" href="">Google+</a>
+  <a class="label swc-blue-bg" href="">Twitter</a>
+  <a class="label swc-blue-bg" href="">GitHub</a>
+  <a class="label swc-blue-bg" href="/LICENSE.html">License</a>
+  <a class="bugreport label swc-blue-bg" href="mailto:?subject=bug%20in%2004-intro-to-dplyr-r.md">Bug Report</a>
+</div>
+
+    </div>
+    <!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/jquery-1.9.1.min.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
+
+  </body>
+</html>

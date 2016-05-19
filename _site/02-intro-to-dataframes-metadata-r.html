@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+      <title>Starting with data</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<link href="/css/bootstrap/bootstrap.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="/css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="/css/swc.css" />
+<link rel="stylesheet" type="text/css" href="/css/swc-bootstrap.css" />
+<meta charset="UTF-8" />
+<meta http-equiv="last-modified" content="" />
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/css/lesson.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="banner">
+  <a href="http://datacarpentry.org" title="Data Carpentry">
+    <img alt="Data Carpentry banner" src="/img/DC1_logo_small.png" height="50px" />
+  </a>
+</div>
+
+
+      <div class="row-fluid">
+        <div class="span10 offset1">
+	  <!-- start content -->
+          
+          <h1>Starting with data</h1>
+          
+          <h2>Learning Objectives</h2>
+
+<ul>
+<li>load external data (CSV files) in memory using the survey table</li>
+<li>(<code>Ecoli_metadata.csv</code>) as an example</li>
+<li> explore the structure and the content of the data in R</li>
+<li> understand what are factors and how to manipulate them</li>
+</ul>
+
+<h2>Lesson</h2>
+
+<h3>Looking at Metadata</h3>
+
+<p>We are studying a population of Escherichia coli (designated Ara-3), which were propagated for more than 40,000 generations in a glucose-limited minimal medium. This medium was supplemented with citrate which E. coli cannot metabolize in the aerobic conditions of the experiment. Sequencing of the populations at regular time points reveals that spontaneous citrate-using mutants (Cit+) appeared at around 31,000 generations. This metadata describes information on the Ara-3 clones and the columns represent:</p>
+
+<table><thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>sample</td>
+<td>clone name</td>
+</tr>
+<tr>
+<td>generation</td>
+<td>generation when sample frozen</td>
+</tr>
+<tr>
+<td>clade</td>
+<td>based on parsimony-based tree</td>
+</tr>
+<tr>
+<td>strain</td>
+<td>ancestral strain</td>
+</tr>
+<tr>
+<td>cit</td>
+<td>citrate-using mutant status</td>
+</tr>
+<tr>
+<td>run</td>
+<td>Sequence read archive sample ID</td>
+</tr>
+<tr>
+<td>genome_size</td>
+<td>size in Mbp (made up data for this lesson)</td>
+</tr>
+</tbody></table>
+
+<p>The metadata file required for this lesson can be downloaded by clicking on this <a href="./data/Ecoli_metadata.csv">link</a> and should also be in the <code>~/dc_sample_data/r-genomics</code> directory if you are using the connected to workshop genomics cloud machine. </p>
+
+<ul>
+<li>First, make sure you are in the correct working directory by typing <code>getwd()</code>. (This should be <code>~/dc_sample_data/r-genomics</code> in the workshop genomics cloud machine. </li>
+<li>Second, create a new directory within this working directory called <code>data</code></li>
+<li>Third, move the downloaded file into this directory</li>
+</ul>
+
+<p>You are now ready to load the data. We are going to use the R function  <code>read.csv()</code> to load the data file into memory (as a <code>data.frame</code>):</p>
+<div class="highlight"><pre><code class="language-r, eval=TRUE,  purl=FALSE" data-lang="r, eval=TRUE,  purl=FALSE">metadata &lt;- read.csv('data/Ecoli_metadata.csv')
+</code></pre></div>
+<p>This statement doesn&#39;t produce any output because assignment doesn&#39;t display anything. If we want to check that our data has been loaded, we can print the variable&#39;s value: <code>metadata</code></p>
+
+<p>Alternatively, wrapping an assignment in parentheses will perform the assignment and display it at the same time.</p>
+<div class="highlight"><pre><code class="language-r, eval = TRUE, purl = FALSE" data-lang="r, eval = TRUE, purl = FALSE">(metadata &lt;- read.csv('data/Ecoli_metadata.csv'))
+</code></pre></div>
+<p>Wow... that was a lot of output. At least it means the data loaded properly. Let&#39;s check the top (the first 6 lines) of this <code>data.frame</code> using the function <code>head()</code>:</p>
+<div class="highlight"><pre><code class="language-r, results='show', purl=FALSE" data-lang="r, results='show', purl=FALSE">head(metadata)
+</code></pre></div>
+<p>We&#39;ve just done two very useful things.
+1. We&#39;ve read our data in to R, so now we can work with it in R
+2. We&#39;ve created a data frame (with the read.csv command) the 
+standard way R works with data. </p>
+
+<h1>What are data frames?</h1>
+
+<p><code>data.frame</code> is the <em>de facto</em> data structure for most tabular data and what we use for statistics and plotting.</p>
+
+<p>A <code>data.frame</code> is a collection of vectors of identical lengths. Each vector represents a column, and each vector can be of a different data type (e.g., characters, integers, factors). The <code>str()</code> function is useful to inspect the data types of the columns.</p>
+
+<p>A <code>data.frame</code> can be created by the functions <code>read.csv()</code> or <code>read.table()</code>, in other words, when importing spreadsheets from your hard drive (or the web).</p>
+
+<p>By default, <code>data.frame</code> converts (= coerces) columns that contain characters (i.e., text) into the <code>factor</code> data type. Depending on what you want to do with the data, you may want to keep these columns as <code>character</code>. To do so, <code>read.csv()</code> and <code>read.table()</code> have an argument called <code>stringsAsFactors</code> which can be set to <code>FALSE</code>:</p>
+
+<p>Let&#39;s now check the <strong>structure</strong> of this <code>data.frame</code> in more details with the function <code>str()</code>:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE" data-lang="r, purl=FALSE">str(metadata)
+</code></pre></div>
+<h2>Inspecting <code>data.frame</code> objects</h2>
+
+<p>We already saw how the functions <code>head()</code> and <code>str()</code> can be useful to check the content and the structure of a <code>data.frame</code>. Here is a non-exhaustive list of functions to get a sense of the content/structure of the data.</p>
+
+<ul>
+<li><strong>Size:</strong>
+
+<ul>
+<li><code>dim()</code> - returns a vector with the number of rows in the first element, and
+the number of columns as the second element (the <strong>dim</strong>ensions of the object)</li>
+<li><code>nrow()</code> - returns the number of rows</li>
+<li><code>ncol()</code> - returns the number of columns</li>
+</ul></li>
+<li><strong>Content:</strong>
+
+<ul>
+<li><code>head()</code> - shows the first 6 rows</li>
+<li><code>tail()</code> - shows the last 6 rows</li>
+</ul></li>
+<li><strong>Names:</strong>
+
+<ul>
+<li><code>names()</code> - returns the column names (synonym of <code>colnames()</code> for <code>data.frame</code>
+objects)</li>
+<li><code>rownames()</code> - returns the row names</li>
+</ul></li>
+<li><strong>Summary:</strong>
+
+<ul>
+<li><code>str()</code> - structure of the object and information about the class, length and
+content of  each column</li>
+<li><code>summary()</code> - summary statistics for each column</li>
+</ul></li>
+</ul>
+
+<p>Note: most of these functions are &quot;generic&quot;, they can be used on other types of objects besides <code>data.frame</code>.</p>
+
+<h3>Challenge</h3>
+
+<p>Based on the give table of functions to asses data structure, can you answer the following questions?</p>
+
+<ul>
+<li>What is the class of the object <code>metadata</code>?</li>
+<li>How many rows and how many columns are in this object?</li>
+<li>How many citrate+ mutants have been recorded in this population?</li>
+</ul>
+
+<p>As you can see, many of the columns in our data frame are of a special class called <code>factor</code>. Before we learn more about the <code>data.frame</code> class, we are going to talk about factors. They are very useful but not necessarily intuitive, and therefore require some attention.</p>
+
+<h2>Factors</h2>
+
+<p>Factors are used to represent categorical data. Factors can be ordered or unordered and are an important class for statistical analysis and for plotting.</p>
+
+<p>Factors are stored as integers, and have labels associated with these unique integers. While factors look (and often behave) like character vectors, they are actually integers under the hood, and you need to be careful when treating them like strings.</p>
+
+<p>In the data frame we just imported, let&#39;s do 
+<code>{r, purl=TRUE}
+str(metadata)
+</code></p>
+
+<p>We can see the names of the multiple columns. And, we see that 
+some say things like <code>Factor w/ 30 levels</code></p>
+
+<p>When we read in a file, any column that contains text is automatically assumed to be a factor. Once created, factors can only contain a pre-defined set values, known as <em>levels</em>. By default, R always sorts <em>levels</em> in alphabetical order. </p>
+
+<p>For instance, we see that <code>cit</code> is a Factor w/ 3 levels, <code>minus</code>, <code>plus</code> and <code>unknown</code>.</p>
+
+<p>You can check this by using the function <code>levels()</code>, and check the
+number of levels using <code>nlevels()</code>:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE, eval=FALSE" data-lang="r, purl=FALSE, eval=FALSE">levels(citrate)
+nlevels(citrate)
+</code></pre></div>
+<p>Sometimes, the order of the factors does not matter, other times you might want to specify the order because it is meaningful (e.g., &quot;low&quot;, &quot;medium&quot;, &quot;high&quot;) or it is required by particular type of analysis. Additionally, specifying the order of the levels allows to compare levels:</p>
+<div class="highlight"><pre><code class="language-r, purl=FALSE, error=TRUE, eval=FALSE" data-lang="r, purl=FALSE, error=TRUE, eval=FALSE">expression &lt;- factor(c("low", "high", "medium", "high", "low", "medium", "high"))
+levels(expression)
+expression &lt;- factor(expression, levels=c("low", "medium", "high"))
+levels(expression)
+min(expression) ## doesn't work
+expression &lt;- factor(expression, levels=c("low", "medium", "high"), ordered=TRUE)
+levels(expression)
+min(expression) ## works!
+</code></pre></div>
+<p>In R&#39;s memory, these factors are represented by numbers (1, 2, 3). They are better than using simple integer labels because factors are self describing:
+<code>&quot;low&quot;</code>, <code>&quot;medium&quot;</code>, and <code>&quot;high&quot;</code>&quot; is more descriptive than <code>1</code>, <code>2</code>, <code>3</code>. Which is low?  You wouldn&#39;t be able to tell with just integer data. Factors have this information built in. It is particularly helpful when there are many levels (like the species in our example data set).</p>
+
+<h3>Converting factors</h3>
+
+<p>If you need to convert a factor to a character vector, simply use
+<code>as.character(x)</code>.</p>
+
+<p>Converting a factor to a numeric vector is however a little trickier, and you
+have to go via a character vector. Compare:</p>
+<div class="highlight"><pre><code class="language-r, purl=TRUE, eval=FALSE" data-lang="r, purl=TRUE, eval=FALSE">f &lt;- factor(c(1, 5, 10, 2))
+as.numeric(f)               ## wrong! and there is no warning...
+as.numeric(as.character(f)) ## works...
+as.numeric(levels(f))[f]    ## The recommended way.
+</code></pre></div>
+<h3>Challenge</h3>
+
+<p>The function <code>table()</code> tabulates observations and can be used to create bar plots quickly. For instance:</p>
+<div class="highlight"><pre><code class="language-r wrong-order, results='show', purl=TRUE" data-lang="r wrong-order, results='show', purl=TRUE">## Question: How can you recreate this plot but by having "control"
+## being listed last instead of first?
+exprmt &lt;- factor(c("treat1", "treat2", "treat1", "treat3", "treat1", "control",
+                   "treat1", "treat2", "treat3"))
+table(exprmt)
+barplot(table(exprmt))
+</code></pre></div><div class="highlight"><pre><code class="language-r correct-order, purl=FALSE" data-lang="r correct-order, purl=FALSE">exprmt &lt;- factor(exprmt, levels=c("treat1", "treat2", "treat3", "control"))
+barplot(table(exprmt))
+</code></pre></div>
+	  <!-- end content -->
+	</div>
+      </div>
+
+      <div class="footer">
+  <a class="label swc-blue-bg" href="">Facebook</a>
+  <a class="label swc-blue-bg" href="">Google+</a>
+  <a class="label swc-blue-bg" href="">Twitter</a>
+  <a class="label swc-blue-bg" href="">GitHub</a>
+  <a class="label swc-blue-bg" href="/LICENSE.html">License</a>
+  <a class="bugreport label swc-blue-bg" href="mailto:?subject=bug%20in%2002-intro-to-dataframes-metadata-r.md">Bug Report</a>
+</div>
+
+    </div>
+    <!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/js/jquery-1.9.1.min.js"></script>
+<script src="/js/bootstrap/bootstrap.min.js"></script>
+
+  </body>
+</html>
