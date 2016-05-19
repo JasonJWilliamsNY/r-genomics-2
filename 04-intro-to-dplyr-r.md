@@ -1,5 +1,6 @@
 ---
 layout: lesson
+root: .
 title: Aggregating and analyzing data with dplyr
 author: Data Carpentry contributors
 ---

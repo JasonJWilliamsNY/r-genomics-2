@@ -1,5 +1,6 @@
 ---
 layout: lesson
+root: .
 title: Data Visualization
 author: Data Carpentry contributors
 minutes: 30

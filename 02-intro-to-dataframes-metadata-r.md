@@ -1,5 +1,6 @@
 ---
 layout: lesson
+root: .
 title: Starting with data
 author: Data Carpentry contributors
 minutes: 20

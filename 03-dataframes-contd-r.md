@@ -1,5 +1,6 @@
 ---
 layout: lesson
+root: .
 title: More on data frames
 author: Data Carpentry contributors
 minutes: 30
