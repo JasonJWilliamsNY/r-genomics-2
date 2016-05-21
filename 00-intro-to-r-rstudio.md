@@ -27,10 +27,7 @@ To connect to this web version of R:
 
 1. Open a web browser and enter the same IP address you were given at the workshop + **:8787** (for example: http://ec2-11-11-111-11.compute-1.amazonaws.com:8787/)
 2. Enter dcuser and the dcuser password to login
-<p><img src="./img/dc_desktop.png"width="500"></p> 
-**Using RStudio on your Desktop**
 
-Start RStudio (Download [here](https://www.rstudio.com/products/rstudio-desktop/)
 
 
 #### Before we get started
