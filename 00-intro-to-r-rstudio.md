@@ -36,11 +36,11 @@ To connect to this web version of R:
   `Empty project`
 - Enter a name for this new folder, and choose a convenient location for
   it. This will be your **working directory** for the rest of the day
-  (e.g., `~/dc_sample_data/r-genomics`)
+  (e.g., `~/dc_sample_data/r_genomics`)
 - Click on "Create project"
 - Under the `Files` tab on the right of the screen, click on `New Folder` and
   create a folder named `data` within your newly created working directory.
-  (e.g., `~/dc_sample_data/r-genomics/data`)
+  (e.g., `~/dc_sample_data/r_genomics/data`)
 - Create a new R script (File > New File > R script) and save it in your working
   directory (e.g. `data-carpentry-script.R`)
 
