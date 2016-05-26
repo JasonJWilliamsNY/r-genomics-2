@@ -19,14 +19,12 @@ Installing packages:
 
 ```{r, eval = FALSE, purl = FALSE}
 install.packages("dplyr") ## install
+
+library("dplyr")          ## load
 ```
 
 You might get asked to choose a [CRAN](https://cran.r-project.org/) mirror -- this is basically asking you to choose a site to download the package from. The choice doesn't matter too much; we recommend choosing the RStudio mirror.
 
-
-```{r, message = FALSE, purl = FALSE}
-library("dplyr")          ## load
-```
 You only need to install a package once per computer, but you need to load it every time you open a new R session and want to use that package.
 
 ### A package for data manipulation
@@ -66,13 +64,13 @@ To create a new column of genome size in bp:
 mutate(metadata, genome_bp = genome_size*1e6)
 ```
 
-What does arrange do?
+What does `arrange()` do? What does `dplyr::select()` do?
 
 ### Some other functions that are useful accompanying the core dplyr functions
 
 Sometimes it can be inconvenient for the results to be displayed to the console. The `head()` function helps with this. Or `glimpse()` from the dplyr function. Its nice to not always have to think about controlling our output in this way though. The `tbl_df()` function helps with this. 
 
-By default, all **R functions operating on vectors that contains missing data will return NA**. It's a way to make sure that users know they have missing data, and make a conscious decision on how to deal with it. When dealing with simple statistics like the mean, the easiest way to ignore `NA` (the missing data) is to use `na.rm=TRUE` (`rm` stands for remove). Can we do this using the filter command though? `is.na()` is a function that determines whether something is or is not an `NA`. The `!` symbol negates it, so we're asking for everything that is not an `NA`. 
+By default, all **R functions operating on vectors that contains missing data will return NA**. It's a way to make sure that users know they have missing data, and make a conscious decision on how to deal with it. When dealing with simple statistics like the mean, the easiest way to ignore `NA` (the missing data) is to use `na.rm=TRUE` (`rm` stands for remove). Can we do this using the filter command though? `is.na()` is a function that determines whether something is an `NA` value. The `!` symbol negates it, so we're asking for everything that is not an `NA`. 
 
 
 ### Pipes: Chaining multiple steps
@@ -111,14 +109,15 @@ metadata %>%
   group_by(cit) %>%
   summarise(n())
 ```
-In the above code `n()` is a summary function that provides a count. There are several different summary statistics that can be generated from our data. The R base package provides many built-in functions such as `mean`, `median`, `min`, `max`, and `range`.  
 
-`group_by()` is often used together with `summarize()` which collapses each group into a single-row summary of that group. `summarize()` can then be used to apply a function such as those that compute simple stats to give an overview for the group. So to view mean `genome_size` by mutant status:
+`group_by()` is often used together with `summarize()` which collapses each group into a single-row summary of that group. `summarize()` can then be used to apply a function such as those that compute simple stats to give an overview for the group. 
+
+In the above code `n()` is a summary function that provides a count for each group. There are several different summary statistics that can be generated from specific columns of our data. The R base package provides many built-in functions such as `mean`, `median`, `min`, `max`, and `range`.  So to view mean `genome_size` by mutant status:
 
 ```{r, purl = FALSE}
 metadata %>%
   group_by(cit) %>%
-  summarize(mean_size = mean(genome_size, na.rm = TRUE))
+  summarize(mean_size = mean(genome_size))
 ```
 
 You can group by multiple columns too:
@@ -126,27 +125,16 @@ You can group by multiple columns too:
 ```{r, purl = FALSE}
 metadata %>%
   group_by(cit, clade) %>%
-  summarize(mean_size = mean(genome_size, na.rm = TRUE))
+  summarize(mean_size = mean(genome_size))
 
 ```
-
-Looks like for one of these clones, the clade is missing. We could then discard those rows using `filter()`:
-
-```{r, purl = FALSE, eval=FALSE}
-metadata %>%
-  group_by(cit, clade) %>%
-  summarize(mean_size = mean(genome_size, na.rm = TRUE)) %>%
-  filter(!is.na(clade))
-```
-
-All of a sudden this isn't running of the screen anymore. That's because `dplyr` has changed our `data.frame` to a `tbl_df`. This is a data structure that's very similar to a data frame; for our purposes the only difference is that it won't automatically show tons of data going off the screen.
 
 You can also summarize multiple variables at the same time:
 
 ```{r, purl = FALSE, eval=FALSE}
 metadata %>%
   group_by(cit, clade) %>%
-  summarize(mean_size = mean(genome_size, na.rm = TRUE),
+  summarize(mean_size = mean(genome_size),
             min_generation = min(generation))
 
 ```
